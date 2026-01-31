@@ -1,0 +1,2270 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الصلاة</title>
+    <!-- إضافة مكتبة Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #2E7D32;
+        }
+        
+        .verse {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #444444;
+        }
+        
+        .surah {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #666666;
+        }
+        
+        .hadith {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #555555;
+            font-style: italic;
+        }
+        
+        .date-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .date-picker {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #4CAF50;
+            background-color: #ffffff;
+            color: #333333;
+            font-size: 1rem;
+            width: 200px;
+        }
+        
+        .save-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .save-btn:hover {
+            background-color: #388E3C;
+        }
+        
+        .nav-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 8px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .nav-btn:hover {
+            background-color: #1976D2;
+        }
+        
+        .nav-display {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2E7D32;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .edit-btn {
+            padding: 5px 10px;
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .edit-btn:hover {
+            background-color: #F57C00;
+        }
+        
+        .delete-btn {
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .prayers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .prayer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .prayer-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .prayer-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333333;
+            transition: color 0.3s;
+        }
+        
+        .prayer-name.checked {
+            color: #4CAF50;
+        }
+        
+        .checkbox {
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            accent-color: #4CAF50;
+        }
+        
+        .mosque-select {
+            width: 150px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #4CAF50;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        
+        .stat-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .stat-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #2E7D32;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        
+        .stat-values {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+        
+        .stat-subtitle {
+            font-size: 1rem;
+            color: #666666;
+            margin-top: 5px;
+        }
+        
+        .mosque-management {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+        
+        .mosque-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .mosque-input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #4CAF50;
+            background-color: #ffffff;
+            color: #333333;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .mosque-list {
+            margin-top: 15px;
+        }
+        
+        .mosque-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .mosque-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mosque-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .data-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .save-data {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .save-data:hover {
+            background-color: #1976D2;
+        }
+        
+        .load-data {
+            background-color: #FF9800;
+            color: white;
+        }
+        
+        .load-data:hover {
+            background-color: #F57C00;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .mosque-stats {
+            margin-top: 15px;
+        }
+        
+        .mosque-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .mosque-stat-name {
+            color: #555;
+        }
+        
+        .mosque-stat-count {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+        
+        /* إضافة أنماط جديدة للإحصائيات التفصيلية للصلوات */
+        .prayer-stats {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .prayer-stats-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #2E7D32;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .prayer-stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #f0f0f0;
+        }
+        
+        .prayer-stat-name {
+            color: #555;
+            font-weight: bold;
+        }
+        
+        .prayer-stat-count {
+            color: #2196F3;
+            font-weight: bold;
+        }
+        
+        /* أنماط التنقل بين الأسابيع */
+        .week-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            gap: 10px;
+        }
+        
+        /* أنماط المخططات البيانية */
+        .chart-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            height: 400px;
+            position: relative;
+        }
+
+        .chart-wrapper {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        /* أنماط المقارنة */
+        .comparison-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comparison-content {
+            margin-top: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .comparison-label {
+            color: #555;
+        }
+
+        .comparison-value {
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .comparison-difference {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .comparison-difference.positive {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #2E7D32;
+            border: 2px solid #4CAF50;
+        }
+
+        .comparison-difference.negative {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
+            border: 2px solid #f44336;
+        }
+
+        .comparison-difference.neutral {
+            background-color: rgba(255, 152, 0, 0.1);
+            color: #F57C00;
+            border: 2px solid #FF9800;
+        }
+
+        .comparison-details {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            flex-shrink: 0;
+        }
+
+        /* إضافة أنماط جديدة */
+        .period-info {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .comparison-period {
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .period-label {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .period-value {
+            color: #2196F3;
+            font-weight: bold;
+        }
+
+        .comparison-item .comparison-label small {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .current-period {
+            color: #2E7D32;
+            font-weight: bold;
+        }
+
+        .previous-period {
+            color: #757575;
+        }
+
+        /* تدرج الألوان في المخططات */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .legend-text {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* أنماط التنقل الفرعي */
+        .sub-nav {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .total-stats {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        /* تنسيق محاذاة العناصر */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .month-stats-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid,
+            .month-stats-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .verse {
+                font-size: 1.2rem;
+            }
+            
+            .date-section {
+                flex-direction: column;
+            }
+            
+            .nav-section {
+                flex-direction: column;
+            }
+            
+            .data-actions {
+                flex-direction: column;
+            }
+            
+            .mosque-form {
+                flex-direction: column;
+            }
+            
+            .mosque-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .mosque-actions {
+                align-self: flex-end;
+            }
+            
+            .week-navigation {
+                flex-direction: column;
+            }
+            
+            .comparison-difference {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>رَبِّ ٱجۡعَلۡنِی مُقِیمَ ٱلصَّلَوٰةِ وَمِن ذُرِّیَّتِیۚ رَبَّنَا وَتَقَبَّلۡ دُعَاۤءِ</h1>
+            <div class="surah">سُورَةُ إِبۡرَاهِيمَ : ٤٠</div>
+            <div class="hadith">العهدُ الذي بينَنا وبينَهم الصلاةُ، فمَن تركَها فقد كفرَ</div>
+        </header>
+        
+        <div class="date-section">
+            <input type="date" id="datePicker" class="date-picker">
+            <button id="saveDate" class="save-btn">حفظ اليوم</button>
+        </div>
+        
+        <div class="prayers-list">
+            <div class="prayer-item" id="fajr">
+                <div class="prayer-info">
+                    <input type="checkbox" class="checkbox">
+                    <span class="prayer-name">الفجر</span>
+                </div>
+                <select class="mosque-select">
+                    <option value="">اختر المسجد</option>
+                </select>
+            </div>
+            
+            <div class="prayer-item" id="dhuhr">
+                <div class="prayer-info">
+                    <input type="checkbox" class="checkbox">
+                    <span class="prayer-name">الظهر</span>
+                </div>
+                <select class="mosque-select">
+                    <option value="">اختر المسجد</option>
+                </select>
+            </div>
+            
+            <div class="prayer-item" id="asr">
+                <div class="prayer-info">
+                    <input type="checkbox" class="checkbox">
+                    <span class="prayer-name">العصر</span>
+                </div>
+                <select class="mosque-select">
+                    <option value="">اختر المسجد</option>
+                </select>
+            </div>
+            
+            <div class="prayer-item" id="maghrib">
+                <div class="prayer-info">
+                    <input type="checkbox" class="checkbox">
+                    <span class="prayer-name">المغرب</span>
+                </div>
+                <select class="mosque-select">
+                    <option value="">اختر المسجد</option>
+                </select>
+            </div>
+            
+            <div class="prayer-item" id="isha">
+                <div class="prayer-info">
+                    <input type="checkbox" class="checkbox">
+                    <span class="prayer-name">العشاء</span>
+                </div>
+                <select class="mosque-select">
+                    <option value="">اختر المسجد</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- ========== بيانات الأسبوع ========== -->
+        <div class="stat-box">
+            <div class="stat-title">هذا الأسبوع</div>
+            <div class="week-navigation">
+                <button id="prevWeek" class="nav-btn">◄</button>
+                <span id="weekDisplay" class="nav-display">الأسبوع الحالي</span>
+                <button id="nextWeek" class="nav-btn">►</button>
+            </div>
+            <div class="stat-values">
+                <div class="stat-value" id="weeklyPrayers">0</div>
+                <div class="stat-subtitle">الصلوات</div>
+                <div class="stat-value" id="weeklySteps">0</div>
+                <div class="stat-subtitle">الخطوات</div>
+            </div>
+            <div class="mosque-stats" id="weeklyMosqueStats"></div>
+        </div>
+        
+        <!-- ========== مقارنة الأسبوع الحالي بالأسبوع الماضي ========== -->
+        <div class="comparison-box">
+            <div class="stat-title">مقارنة الأسبوع الحالي بالأسبوع الماضي</div>
+            <div class="comparison-content">
+                <div class="comparison-period">
+                    <div class="period-label">نوع المقارنة:</div>
+                    <div class="period-value">يوم بيوم</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="current-period">الأسبوع الحالي:</span>
+                        <small id="currentWeekInfo">حتى اليوم</small>
+                    </div>
+                    <div class="comparison-value" id="currentWeekPrayers">0</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="previous-period">الأسبوع الماضي:</span>
+                        <small id="lastWeekInfo">أسبوع كامل</small>
+                    </div>
+                    <div class="comparison-value" id="lastWeekPrayers">0</div>
+                </div>
+                <div class="comparison-difference" id="weekComparison">
+                    <span>متساوي</span>
+                </div>
+                <div class="comparison-details" id="weekComparisonDetails"></div>
+            </div>
+        </div>
+        
+        <!-- ========== بيانات الشهر ========== -->
+        <div class="stat-box">
+            <div class="stat-title">هذا الشهر</div>
+            <div class="nav-section">
+                <button id="prevMonth" class="nav-btn">◄</button>
+                <span id="monthDisplay" class="nav-display">شهر 10 - 2024</span>
+                <button id="nextMonth" class="nav-btn">►</button>
+            </div>
+            <div class="stat-values">
+                <div class="stat-value" id="monthlyPrayers">0</div>
+                <div class="stat-subtitle">الصلوات</div>
+                <div class="stat-value" id="monthlySteps">0</div>
+                <div class="stat-subtitle">الخطوات</div>
+            </div>
+            <div class="mosque-stats" id="monthlyMosqueStats"></div>
+        </div>
+        
+        <!-- ========== مقارنة الشهر الحالي بالشهر الماضي ========== -->
+        <div class="comparison-box">
+            <div class="stat-title">مقارنة الشهر الحالي بالشهر الماضي</div>
+            <div class="comparison-content">
+                <div class="comparison-period">
+                    <div class="period-label">نوع المقارنة:</div>
+                    <div class="period-value">عداد تنازلي</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="current-period">هذا الشهر:</span>
+                        <small id="currentMonthInfo">حتى الآن</small>
+                    </div>
+                    <div class="comparison-value" id="currentMonthPrayers">0</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="previous-period">الشهر الماضي:</span>
+                        <small id="lastMonthInfo">كامل</small>
+                    </div>
+                    <div class="comparison-value" id="lastMonthPrayers">0</div>
+                </div>
+                <div class="comparison-difference" id="monthComparison">
+                    <span>متساوي</span>
+                </div>
+                <div class="comparison-details" id="monthComparisonDetails"></div>
+            </div>
+        </div>
+        
+        <!-- ========== مخطط الشهر ========== -->
+        <div class="chart-container">
+            <div class="stat-title">مخطط الصلوات الشهري <span id="chartMonthLabel"></span></div>
+            <div class="chart-wrapper">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f44336;"></div>
+                    <div class="legend-text">قليلة</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF9800;"></div>
+                    <div class="legend-text">متوسطة</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4CAF50;"></div>
+                    <div class="legend-text">كثيرة</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ========== بيانات السنة ========== -->
+        <div class="stat-box">
+            <div class="stat-title">هذه السنة</div>
+            <div class="nav-section">
+                <button id="prevYear" class="nav-btn">◄</button>
+                <span id="yearDisplay" class="nav-display">السنة 2024</span>
+                <button id="nextYear" class="nav-btn">►</button>
+            </div>
+            <div class="stat-values">
+                <div class="stat-value" id="yearlyPrayers">0</div>
+                <div class="stat-subtitle">الصلوات</div>
+                <div class="stat-value" id="yearlySteps">0</div>
+                <div class="stat-subtitle">الخطوات</div>
+            </div>
+            <div class="mosque-stats" id="yearlyMosqueStats"></div>
+        </div>
+        
+        <!-- ========== مقارنة السنة الحالية بالسنة الماضية ========== -->
+        <div class="comparison-box">
+            <div class="stat-title">مقارنة السنة الحالية بالسنة الماضية</div>
+            <div class="comparison-content">
+                <div class="comparison-period">
+                    <div class="period-label">نوع المقارنة:</div>
+                    <div class="period-value">عداد تنازلي</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="current-period">هذه السنة:</span>
+                        <small id="currentYearInfo">حتى الآن</small>
+                    </div>
+                    <div class="comparison-value" id="currentYearPrayers">0</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">
+                        <span class="previous-period">السنة الماضية:</span>
+                        <small id="lastYearInfo">كاملة</small>
+                    </div>
+                    <div class="comparison-value" id="lastYearPrayers">0</div>
+                </div>
+                <div class="comparison-difference" id="yearComparison">
+                    <span>متساوي</span>
+                </div>
+                <div class="comparison-details" id="yearComparisonDetails"></div>
+            </div>
+        </div>
+        
+        <!-- ========== مخطط السنة ========== -->
+        <div class="chart-container">
+            <div class="stat-title">مخطط الصلوات السنوي <span id="chartYearLabel"></span></div>
+            <div class="chart-wrapper">
+                <canvas id="yearlyChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f44336;"></div>
+                    <div class="legend-text">قليلة</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF9800;"></div>
+                    <div class="legend-text">متوسطة</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4CAF50;"></div>
+                    <div class="legend-text">كثيرة</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- البيانات الكلية المضافة -->
+        <div class="total-stats">
+            <div class="stat-title">البيانات الكلية</div>
+            <div class="stat-values">
+                <div class="stat-value" id="totalPrayers">0</div>
+                <div class="stat-subtitle">إجمالي الصلوات</div>
+                <div class="stat-value" id="totalSteps">0</div>
+                <div class="stat-subtitle">إجمالي الخطوات</div>
+            </div>
+            
+            <!-- قسم إحصائيات الصلوات التفصيلية -->
+            <div class="prayer-stats">
+                <div class="prayer-stats-title">إحصائيات تفصيلية للصلوات:</div>
+                <div id="prayerDetailsStats"></div>
+            </div>
+            
+            <div class="mosque-stats" id="totalMosqueStats"></div>
+        </div>
+        
+        <div class="data-actions">
+            <button id="saveData" class="action-btn save-data">حفظ البيانات في ملف</button>
+            <button id="loadData" class="action-btn load-data">رفع البيانات من ملف</button>
+            <input type="file" id="fileInput" class="hidden" accept=".json">
+        </div>
+
+        <div class="mosque-management">
+            <div class="stat-title">أسماء المساجد</div>
+            <div class="mosque-form">
+                <input type="text" id="mosqueName" class="mosque-input" placeholder="اسم المسجد">
+                <input type="number" id="mosqueSteps" class="mosque-input" placeholder="عدد الخطوات" min="0">
+                <button id="addMosque" class="save-btn">إضافة مسجد</button>
+                <button id="updateMosque" class="save-btn" style="display: none;">تحديث المسجد</button>
+                <button id="cancelEdit" class="delete-btn" style="display: none;">إلغاء</button>
+            </div>
+            <div class="mosque-list" id="mosqueList"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==============================
+        // ✅ ✅ ✅ الدوال الأساسية ✅ ✅ ✅
+        // ==============================
+        
+        // دالة تنسيق تاريخ محلي (بدون UTC)
+        function formatLocalDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+        
+        // ✅ دالة حساب رقم الأسبوع (الأحد → السبت)
+        function getWeekNumber(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+
+            // نرجع لأول يوم أحد
+            const sunday = new Date(d);
+            sunday.setDate(d.getDate() - d.getDay());
+
+            // أول أحد في السنة
+            const firstDayOfYear = new Date(d.getFullYear(), 0, 1);
+            const firstSunday = new Date(firstDayOfYear);
+            firstSunday.setDate(firstDayOfYear.getDate() - firstDayOfYear.getDay());
+            firstSunday.setHours(0, 0, 0, 0);
+
+            const diffDays = Math.floor((sunday - firstSunday) / 86400000);
+            return Math.floor(diffDays / 7) + 1;
+        }
+        
+        // ✅ دالة بداية الأسبوع من رقم الأسبوع
+        function getDateOfWeek(week, year) {
+            const firstDayOfYear = new Date(year, 0, 1);
+            const firstSunday = new Date(firstDayOfYear);
+            firstSunday.setDate(firstDayOfYear.getDate() - firstDayOfYear.getDay());
+            firstSunday.setHours(0, 0, 0, 0);
+
+            const result = new Date(firstSunday);
+            result.setDate(firstSunday.getDate() + (week - 1) * 7);
+            return result;
+        }
+        
+        // ✅ دالة نطاق الأسبوع (بدون UTC)
+        function getWeekRange(date) {
+            const d = new Date(date);
+            const day = d.getDay(); // 0 = الأحد
+
+            const start = new Date(d);
+            start.setDate(d.getDate() - day);
+            start.setHours(0, 0, 0, 0);
+
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            end.setHours(23, 59, 59, 999);
+
+            return {
+                start: formatLocalDate(start),
+                end: formatLocalDate(end)
+            };
+        }
+        
+        // ==============================
+        // البيانات الأساسية
+        // ==============================
+        
+        // الحصول على التاريخ الحالي بتوقيت الأردن
+        function getCurrentJordanDate() {
+            const now = new Date();
+            const jordanOffset = 2 * 60; // دقائق
+            const localOffset = now.getTimezoneOffset();
+            const jordanTime = new Date(now.getTime() + (localOffset + jordanOffset) * 60000);
+            return jordanTime;
+        }
+        
+        // تعيين تاريخ اليوم الافتراضي بتوقيت الأردن
+        const currentJordanDate = getCurrentJordanDate();
+        document.getElementById('datePicker').valueAsDate = currentJordanDate;
+        
+        // بيانات التطبيق
+        let prayerData = {
+            daily: {
+                date: formatLocalDate(currentJordanDate),
+                prayers: {
+                    fajr: { checked: false, mosque: '' },
+                    dhuhr: { checked: false, mosque: '' },
+                    asr: { checked: false, mosque: '' },
+                    maghrib: { checked: false, mosque: '' },
+                    isha: { checked: false, mosque: '' }
+                }
+            },
+            history: {},
+            mosques: {}
+        };
+    
+        // متغير لتخزين المسجد الذي يتم تعديله حالياً
+        let currentEditingMosque = null;
+        
+        // متغيرات للتنقل
+        let currentViewYear = currentJordanDate.getFullYear();
+        let currentViewMonth = currentJordanDate.getMonth() + 1; // 1-12
+        let currentViewWeek = getWeekNumber(currentJordanDate);
+        
+        // التحقق من السنة الكبيسة
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+        
+        // الحصول على عدد أيام الشهر
+        function getDaysInMonth(month, year) {
+            const daysInMonth = {
+                1: 31,
+                2: isLeapYear(year) ? 29 : 28,
+                3: 31,
+                4: 30,
+                5: 31,
+                6: 30,
+                7: 31,
+                8: 31,
+                9: 30,
+                10: 31,
+                11: 30,
+                12: 31
+            };
+            return daysInMonth[month];
+        }
+        
+        // ==============================
+        // ✅ إصلاح مشكلة الحفظ ✅
+        // ==============================
+        
+        // تحميل البيانات من localStorage
+        function loadData() {
+            try {
+                const savedData = localStorage.getItem('prayerTrackerData');
+                if (savedData) {
+                    prayerData = JSON.parse(savedData);
+                    // تحويل التواريخ القديمة إذا لزم الأمر
+                    convertOldData();
+                    loadDateData();
+                    console.log('✅ البيانات تم تحميلها بنجاح');
+                } else {
+                    console.log('ℹ️ لا توجد بيانات محفوظة');
+                }
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات:', error);
+                prayerData = {
+                    daily: {
+                        date: formatLocalDate(currentJordanDate),
+                        prayers: {
+                            fajr: { checked: false, mosque: '' },
+                            dhuhr: { checked: false, mosque: '' },
+                            asr: { checked: false, mosque: '' },
+                            maghrib: { checked: false, mosque: '' },
+                            isha: { checked: false, mosque: '' }
+                        }
+                    },
+                    history: {},
+                    mosques: {}
+                };
+            }
+        }
+        
+        // تحويل البيانات القديمة إذا لزم الأمر
+        function convertOldData() {
+            // التأكد من أن بنية البيانات صحيحة
+            if (!prayerData.history) prayerData.history = {};
+            if (!prayerData.mosques) prayerData.mosques = {};
+            if (!prayerData.daily) {
+                prayerData.daily = {
+                    date: formatLocalDate(currentJordanDate),
+                    prayers: {
+                        fajr: { checked: false, mosque: '' },
+                        dhuhr: { checked: false, mosque: '' },
+                        asr: { checked: false, mosque: '' },
+                        maghrib: { checked: false, mosque: '' },
+                        isha: { checked: false, mosque: '' }
+                    }
+                };
+            }
+        }
+        
+        // تحميل بيانات التاريخ المحدد
+        function loadDateData() {
+            try {
+                const selectedDate = document.getElementById('datePicker').value;
+                prayerData.daily.date = selectedDate;
+                
+                if (prayerData.history[selectedDate]) {
+                    // التأكد من أن بنية الصلوات كاملة
+                    const savedPrayers = prayerData.history[selectedDate].prayers;
+                    prayerData.daily.prayers = {
+                        fajr: savedPrayers.fajr || { checked: false, mosque: '' },
+                        dhuhr: savedPrayers.dhuhr || { checked: false, mosque: '' },
+                        asr: savedPrayers.asr || { checked: false, mosque: '' },
+                        maghrib: savedPrayers.maghrib || { checked: false, mosque: '' },
+                        isha: savedPrayers.isha || { checked: false, mosque: '' }
+                    };
+                } else {
+                    // إذا لم تكن هناك بيانات، قم بتهيئة البيانات الافتراضية
+                    prayerData.daily.prayers = {
+                        fajr: { checked: false, mosque: '' },
+                        dhuhr: { checked: false, mosque: '' },
+                        asr: { checked: false, mosque: '' },
+                        maghrib: { checked: false, mosque: '' },
+                        isha: { checked: false, mosque: '' }
+                    };
+                }
+                
+                updateUI();
+            } catch (error) {
+                console.error('❌ خطأ في تحميل بيانات التاريخ:', error);
+            }
+        }
+        
+        // حفظ البيانات إلى localStorage
+        function saveData() {
+            try {
+                // حفظ بيانات اليوم في التاريخ
+                prayerData.history[prayerData.daily.date] = {
+                    prayers: JSON.parse(JSON.stringify(prayerData.daily.prayers))
+                };
+                
+                localStorage.setItem('prayerTrackerData', JSON.stringify(prayerData));
+                console.log('✅ البيانات تم حفظها:', prayerData.daily.date);
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في حفظ البيانات:', error);
+                alert('حدث خطأ في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+                return false;
+            }
+        }
+        
+        // ==============================
+        // دوال التنقل والعرض
+        // ==============================
+        
+        // تحديث عرض الشهر والسنة والأسبوع
+        function updateNavigationDisplay() {
+            document.getElementById('yearDisplay').textContent = `السنة ${currentViewYear}`;
+            document.getElementById('monthDisplay').textContent = `شهر ${currentViewMonth} - ${currentViewYear}`;
+            document.getElementById('weekDisplay').textContent = `الأسبوع ${currentViewWeek} - ${currentViewYear}`;
+            updateStats();
+            updateComparisons();
+            updateCharts();
+        }
+
+        // التحقق مما إذا كان التاريخ يقع ضمن الأسبوع المعروض
+        function isDateInCurrentWeek(dateStr) {
+            try {
+                const weekRange = getCurrentWeekRange();
+                const targetDate = new Date(dateStr);
+                
+                const startTime = new Date(weekRange.start).getTime();
+                const endTime = new Date(weekRange.end).getTime();
+                const targetTime = targetDate.getTime();
+                
+                return targetTime >= startTime && targetTime <= endTime;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // الحصول على نطاق الأسبوع المعروض
+        function getCurrentWeekRange() {
+            const startDate = getDateOfWeek(currentViewWeek, currentViewYear);
+            return getWeekRange(startDate);
+        }
+
+        // التحقق مما إذا كان التاريخ يقع ضمن الشهر المعروض
+        function isDateInCurrentMonth(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                const dateYear = date.getFullYear();
+                const dateMonth = date.getMonth() + 1; // 1-12
+                
+                return dateYear === currentViewYear && dateMonth === currentViewMonth;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // التحقق مما إذا كان التاريخ يقع ضمن السنة المعروضة
+        function isDateInCurrentYear(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                const dateYear = date.getFullYear();
+                
+                if (dateYear !== currentViewYear) {
+                    return false;
+                }
+                
+                const startOfYear = new Date(currentViewYear, 0, 1);
+                const endOfYear = new Date(currentViewYear, 11, 31);
+                const targetTime = date.getTime();
+                const startTime = startOfYear.getTime();
+                const endTime = endOfYear.getTime();
+                
+                return targetTime >= startTime && targetTime <= endTime;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // ==============================
+        // دوال المساجد
+        // ==============================
+        
+        // تحديث قائمة المساجد في القوائم المنسدلة
+        function updateMosqueSelects() {
+            const selects = document.querySelectorAll('.mosque-select');
+            selects.forEach(select => {
+                const currentValue = select.value;
+                
+                // حفظ الخيار الأول فقط
+                const firstOption = select.options[0];
+                select.innerHTML = '';
+                select.appendChild(firstOption);
+                
+                for (const mosqueName in prayerData.mosques) {
+                    const option = document.createElement('option');
+                    option.value = mosqueName;
+                    option.textContent = mosqueName;
+                    select.appendChild(option);
+                }
+                
+                if (currentValue && prayerData.mosques[currentValue]) {
+                    select.value = currentValue;
+                }
+            });
+        }
+        
+        // تحديث قائمة المساجد في واجهة الإدارة
+        function updateMosqueList() {
+            const mosqueList = document.getElementById('mosqueList');
+            mosqueList.innerHTML = '';
+            
+            for (const mosqueName in prayerData.mosques) {
+                const mosqueItem = document.createElement('div');
+                mosqueItem.className = 'mosque-item';
+                mosqueItem.innerHTML = `
+                    <div class="mosque-info">
+                        <span><strong>${mosqueName}</strong></span>
+                        <span>${prayerData.mosques[mosqueName]} خطوة</span>
+                    </div>
+                    <div class="mosque-actions">
+                        <button class="edit-btn" data-mosque="${mosqueName}">تعديل</button>
+                        <button class="delete-btn" data-mosque="${mosqueName}">حذف</button>
+                    </div>
+                `;
+                mosqueList.appendChild(mosqueItem);
+            }
+
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editMosque(this.getAttribute('data-mosque'));
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    deleteMosque(this.getAttribute('data-mosque'));
+                });
+            });
+        }
+
+        // تعديل مسجد
+        function editMosque(mosqueName) {
+            currentEditingMosque = mosqueName;
+            document.getElementById('mosqueName').value = mosqueName;
+            document.getElementById('mosqueSteps').value = prayerData.mosques[mosqueName];
+            
+            document.getElementById('addMosque').style.display = 'none';
+            document.getElementById('updateMosque').style.display = 'inline-block';
+            document.getElementById('cancelEdit').style.display = 'inline-block';
+        }
+
+        // تحديث المسجد
+        function updateMosque() {
+            const newName = document.getElementById('mosqueName').value.trim();
+            const newSteps = parseInt(document.getElementById('mosqueSteps').value);
+
+            if (newName && !isNaN(newSteps) && newSteps >= 0) {
+                if (newName !== currentEditingMosque) {
+                    // تحديث جميع السجلات التاريخية
+                    for (const date in prayerData.history) {
+                        for (const prayer in prayerData.history[date].prayers) {
+                            if (prayerData.history[date].prayers[prayer].mosque === currentEditingMosque) {
+                                prayerData.history[date].prayers[prayer].mosque = newName;
+                            }
+                        }
+                    }
+
+                    // تحديث بيانات اليوم الحالي
+                    for (const prayer in prayerData.daily.prayers) {
+                        if (prayerData.daily.prayers[prayer].mosque === currentEditingMosque) {
+                            prayerData.daily.prayers[prayer].mosque = newName;
+                        }
+                    }
+
+                    delete prayerData.mosques[currentEditingMosque];
+                }
+
+                prayerData.mosques[newName] = newSteps;
+                cancelEdit();
+                updateUI();
+                if (saveData()) {
+                    alert('تم تحديث المسجد بنجاح');
+                }
+            } else {
+                alert('يرجى إدخال اسم المسجد وعدد الخطوات بشكل صحيح');
+            }
+        }
+
+        // حذف مسجد
+        function deleteMosque(mosqueName) {
+            if (confirm(`هل أنت متأكد من حذف مسجد "${mosqueName}"؟`)) {
+                for (const date in prayerData.history) {
+                    for (const prayer in prayerData.history[date].prayers) {
+                        if (prayerData.history[date].prayers[prayer].mosque === mosqueName) {
+                            prayerData.history[date].prayers[prayer].mosque = '';
+                        }
+                    }
+                }
+
+                for (const prayer in prayerData.daily.prayers) {
+                    if (prayerData.daily.prayers[prayer].mosque === mosqueName) {
+                        prayerData.daily.prayers[prayer].mosque = '';
+                    }
+                }
+
+                delete prayerData.mosques[mosqueName];
+                updateUI();
+                if (saveData()) {
+                    alert('تم حذف المسجد بنجاح');
+                }
+            }
+        }
+
+        // إلغاء التعديل
+        function cancelEdit() {
+            currentEditingMosque = null;
+            document.getElementById('mosqueName').value = '';
+            document.getElementById('mosqueSteps').value = '';
+            document.getElementById('addMosque').style.display = 'inline-block';
+            document.getElementById('updateMosque').style.display = 'none';
+            document.getElementById('cancelEdit').style.display = 'none';
+        }
+        
+        // ==============================
+        // دوال الحسابات الأساسية
+        // ==============================
+        
+        // حساب إحصائيات الأسبوع المعروض
+        function calculateWeeklyStats() {
+            let weeklyPrayers = 0;
+            let weeklySteps = 0;
+            const mosqueCounts = {};
+            
+            for (const date in prayerData.history) {
+                if (isDateInCurrentWeek(date)) {
+                    const dayData = prayerData.history[date];
+                    for (const prayer in dayData.prayers) {
+                        if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                            weeklyPrayers++;
+                            const mosqueName = dayData.prayers[prayer].mosque;
+                            weeklySteps += prayerData.mosques[mosqueName] || 0;
+                            mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                        }
+                    }
+                }
+            }
+            
+            const todayDateStr = prayerData.daily.date;
+            if (!prayerData.history[todayDateStr] && isDateInCurrentWeek(todayDateStr)) {
+                for (const prayer in prayerData.daily.prayers) {
+                    if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
+                        weeklyPrayers++;
+                        const mosqueName = prayerData.daily.prayers[prayer].mosque;
+                        weeklySteps += prayerData.mosques[mosqueName] || 0;
+                        mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                    }
+                }
+            }
+            
+            return { 
+                prayers: weeklyPrayers, 
+                steps: weeklySteps,
+                mosqueCounts: mosqueCounts
+            };
+        }
+        
+        // حساب إحصائيات الشهر الحالي المعروض
+        function calculateMonthlyStats() {
+            let monthlyPrayers = 0;
+            let monthlySteps = 0;
+            const mosqueCounts = {};
+            
+            for (const date in prayerData.history) {
+                if (isDateInCurrentMonth(date)) {
+                    const dayData = prayerData.history[date];
+                    for (const prayer in dayData.prayers) {
+                        if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                            monthlyPrayers++;
+                            const mosqueName = dayData.prayers[prayer].mosque;
+                            monthlySteps += prayerData.mosques[mosqueName] || 0;
+                            mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                        }
+                    }
+                }
+            }
+            
+            const todayDateStr = prayerData.daily.date;
+            if (!prayerData.history[todayDateStr] && isDateInCurrentMonth(todayDateStr)) {
+                for (const prayer in prayerData.daily.prayers) {
+                    if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
+                        monthlyPrayers++;
+                        const mosqueName = prayerData.daily.prayers[prayer].mosque;
+                        monthlySteps += prayerData.mosques[mosqueName] || 0;
+                        mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                    }
+                }
+            }
+            
+            return { 
+                prayers: monthlyPrayers, 
+                steps: monthlySteps,
+                mosqueCounts: mosqueCounts
+            };
+        }
+        
+        // حساب إحصائيات السنة الحالية المعروضة
+        function calculateYearlyStats() {
+            let yearlyPrayers = 0;
+            let yearlySteps = 0;
+            const mosqueCounts = {};
+            
+            for (const date in prayerData.history) {
+                if (isDateInCurrentYear(date)) {
+                    const dayData = prayerData.history[date];
+                    for (const prayer in dayData.prayers) {
+                        if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                            yearlyPrayers++;
+                            const mosqueName = dayData.prayers[prayer].mosque;
+                            yearlySteps += prayerData.mosques[mosqueName] || 0;
+                            mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                        }
+                    }
+                }
+            }
+            
+            const todayDateStr = prayerData.daily.date;
+            if (!prayerData.history[todayDateStr] && isDateInCurrentYear(todayDateStr)) {
+                for (const prayer in prayerData.daily.prayers) {
+                    if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
+                        yearlyPrayers++;
+                        const mosqueName = prayerData.daily.prayers[prayer].mosque;
+                        yearlySteps += prayerData.mosques[mosqueName] || 0;
+                        mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                    }
+                }
+            }
+            
+            return { 
+                prayers: yearlyPrayers, 
+                steps: yearlySteps,
+                mosqueCounts: mosqueCounts
+            };
+        }
+        
+        // حساب الإحصائيات الكلية
+        function calculateTotalStats() {
+            let totalPrayers = 0;
+            let totalSteps = 0;
+            const mosqueCounts = {};
+            const prayerCounts = {
+                fajr: 0,
+                dhuhr: 0,
+                asr: 0,
+                maghrib: 0,
+                isha: 0
+            };
+            
+            for (const date in prayerData.history) {
+                const dayData = prayerData.history[date];
+                for (const prayer in dayData.prayers) {
+                    if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                        totalPrayers++;
+                        prayerCounts[prayer]++;
+                        const mosqueName = dayData.prayers[prayer].mosque;
+                        totalSteps += prayerData.mosques[mosqueName] || 0;
+                        mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                    }
+                }
+            }
+            
+            // إضافة بيانات اليوم الحالي إذا لم تكن محفوظة بعد
+            const todayDateStr = prayerData.daily.date;
+            const todayInHistory = prayerData.history[todayDateStr];
+            
+            if (!todayInHistory) {
+                for (const prayer in prayerData.daily.prayers) {
+                    if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
+                        totalPrayers++;
+                        prayerCounts[prayer]++;
+                        const mosqueName = prayerData.daily.prayers[prayer].mosque;
+                        totalSteps += prayerData.mosques[mosqueName] || 0;
+                        mosqueCounts[mosqueName] = (mosqueCounts[mosqueName] || 0) + 1;
+                    }
+                }
+            }
+            
+            return { 
+                prayers: totalPrayers, 
+                steps: totalSteps,
+                mosqueCounts: mosqueCounts,
+                prayerCounts: prayerCounts
+            };
+        }
+        
+        // ==============================
+        // ✅ دوال المقارنات الجديدة ✅
+        // ==============================
+        
+        // 1. دالة لحساب الصلوات في أسبوع كامل
+        function calculateStatsForFullWeek(week, year) {
+            let prayers = 0;
+            
+            try {
+                const startDate = getDateOfWeek(week, year);
+                const weekRange = getWeekRange(startDate);
+                const startTime = new Date(weekRange.start).getTime();
+                const endTime = new Date(weekRange.end).getTime();
+                
+                for (const date in prayerData.history) {
+                    const dateTime = new Date(date).getTime();
+                    if (dateTime >= startTime && dateTime <= endTime) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ في حساب أسبوع كامل:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // 2. دالة لحساب الصلوات حتى اليوم الحالي في الأسبوع الحالي فقط
+        function calculateCurrentWeekUntilToday() {
+            let prayers = 0;
+            
+            try {
+                const today = new Date();
+                const currentWeek = getWeekNumber(today);
+                const currentYear = today.getFullYear();
+                
+                // فقط إذا كان الأسبوع المعروض هو الأسبوع الحالي
+                if (currentViewWeek !== currentWeek || currentViewYear !== currentYear) {
+                    return 0;
+                }
+                
+                const startDate = getDateOfWeek(currentWeek, currentYear);
+                const currentDayOfWeek = today.getDay(); // 0 = الأحد
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + currentDayOfWeek);
+                
+                for (const date in prayerData.history) {
+                    const dateObj = new Date(date);
+                    if (dateObj >= startDate && dateObj <= endDate) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ في حساب الأسبوع الحالي حتى اليوم:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // 3. دالة لحساب إجمالي صلوات شهر كامل
+        function calculateFullMonthStats(month, year) {
+            let prayers = 0;
+            
+            try {
+                const startOfMonth = new Date(year, month - 1, 1);
+                const endOfMonth = new Date(year, month, 0);
+                
+                for (const date in prayerData.history) {
+                    const dateObj = new Date(date);
+                    if (dateObj >= startOfMonth && dateObj <= endOfMonth) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ في حساب شهر كامل:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // 4. دالة لحساب إجمالي صلوات سنة كاملة
+        function calculateFullYearStats(year) {
+            let prayers = 0;
+            
+            try {
+                const startOfYear = new Date(year, 0, 1);
+                const endOfYear = new Date(year, 11, 31);
+                
+                for (const date in prayerData.history) {
+                    const dateObj = new Date(date);
+                    if (dateObj >= startOfYear && dateObj <= endOfYear) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('خطأ في حساب سنة كاملة:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // 5. دالة تحديث المقارنات حسب النظام الجديد
+        function updateComparisons() {
+            try {
+                const today = new Date();
+                const currentDay = today.getDate();
+                
+                // ========== الأسبوع ==========
+                // الأسبوع الحالي: حتى اليوم الحالي فقط
+                const currentWeekPrayersUntilToday = calculateCurrentWeekUntilToday();
+                
+                // الأسبوع الماضي: أسبوع كامل
+                const lastWeekYear = currentViewWeek === 1 ? currentViewYear - 1 : currentViewYear;
+                const lastWeek = currentViewWeek === 1 ? 52 : currentViewWeek - 1;
+                const lastWeekFullPrayers = calculateStatsForFullWeek(lastWeek, lastWeekYear);
+                
+                // تحديث عرض الأسبوع
+                document.getElementById('currentWeekPrayers').textContent = currentWeekPrayersUntilToday;
+                document.getElementById('lastWeekPrayers').textContent = lastWeekFullPrayers;
+                document.getElementById('currentWeekInfo').textContent = `حتى اليوم ${currentDay}`;
+                document.getElementById('lastWeekInfo').textContent = 'أسبوع كامل';
+                
+                const weekDiff = currentWeekPrayersUntilToday - lastWeekFullPrayers;
+                updateComparisonDisplay('weekComparison', 'weekComparisonDetails', weekDiff, 'صلاة', 
+                                      'الأسبوع الحالي حتى اليوم مقابل الأسبوع الماضي كامل');
+                
+                // ========== الشهر ==========
+                // الشهر الحالي: حتى الآن
+                const currentMonthStats = calculateMonthlyStats();
+                const currentMonthPrayersSoFar = currentMonthStats.prayers;
+                
+                // الشهر الماضي: شهر كامل
+                const lastMonthYear = currentViewMonth === 1 ? currentViewYear - 1 : currentViewYear;
+                const lastMonth = currentViewMonth === 1 ? 12 : currentViewMonth - 1;
+                const lastMonthFullPrayers = calculateFullMonthStats(lastMonth, lastMonthYear);
+                
+                // تحديث عرض الشهر
+                document.getElementById('currentMonthPrayers').textContent = currentMonthPrayersSoFar;
+                document.getElementById('lastMonthPrayers').textContent = lastMonthFullPrayers;
+                document.getElementById('currentMonthInfo').textContent = `حتى اليوم ${currentDay}`;
+                document.getElementById('lastMonthInfo').textContent = 'شهر كامل';
+                
+                const monthDiff = currentMonthPrayersSoFar - lastMonthFullPrayers;
+                updateComparisonDisplay('monthComparison', 'monthComparisonDetails', monthDiff, 'صلاة', 
+                                      'عداد تنازلي: تحتاج إلى تخطي إجمالي الشهر الماضي');
+                
+                // ========== السنة ==========
+                // السنة الحالية: حتى الآن
+                const currentYearStats = calculateYearlyStats();
+                const currentYearPrayersSoFar = currentYearStats.prayers;
+                
+                // السنة الماضية: سنة كاملة
+                const lastYearFullPrayers = calculateFullYearStats(currentViewYear - 1);
+                
+                // تحديث عرض السنة
+                document.getElementById('currentYearPrayers').textContent = currentYearPrayersSoFar;
+                document.getElementById('lastYearPrayers').textContent = lastYearFullPrayers;
+                document.getElementById('currentYearInfo').textContent = 'حتى الآن';
+                document.getElementById('lastYearInfo').textContent = 'سنة كاملة';
+                
+                const yearDiff = currentYearPrayersSoFar - lastYearFullPrayers;
+                updateComparisonDisplay('yearComparison', 'yearComparisonDetails', yearDiff, 'صلاة', 
+                                      'عداد تنازلي: تحتاج إلى تخطي إجمالي السنة الماضية');
+            } catch (error) {
+                console.error('❌ خطأ في تحديث المقارنات:', error);
+            }
+        }
+        
+        // 6. دالة تحديث عرض المقارنة
+        function updateComparisonDisplay(elementId, detailsId, diff, unit, description) {
+            const element = document.getElementById(elementId);
+            const details = document.getElementById(detailsId);
+            
+            element.className = 'comparison-difference';
+            
+            if (diff > 0) {
+                element.classList.add('positive');
+                element.innerHTML = `<span>+${diff} ${unit}</span>`;
+                details.textContent = `ممتاز! أنت متقدم ${diff} ${unit} عن الفترة الماضية. ${description}`;
+            } else if (diff < 0) {
+                element.classList.add('negative');
+                element.innerHTML = `<span>${diff} ${unit}</span>`;
+                details.textContent = `تحتاج إلى ${Math.abs(diff)} ${unit} إضافية لتتخطى الفترة الماضية. ${description}`;
+            } else {
+                element.classList.add('neutral');
+                element.innerHTML = `<span>متساوي</span>`;
+                details.textContent = `أنت في نفس مستوى الفترة الماضية. ${description}`;
+            }
+        }
+        
+        // ==============================
+        // ✅ دوال المخططات البيانية المعدلة ✅
+        // ==============================
+        
+        // دالة للحصول على بيانات الصلوات الشهرية
+        function getMonthlyPrayerData() {
+            const daysInMonth = getDaysInMonth(currentViewMonth, currentViewYear);
+            const labels = [];
+            const values = [];
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                labels.push(`يوم ${day}`);
+                
+                const dateStr = `${currentViewYear}-${String(currentViewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let dayPrayers = 0;
+                
+                if (prayerData.history[dateStr]) {
+                    const dayData = prayerData.history[dateStr];
+                    for (const prayer in dayData.prayers) {
+                        if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                            dayPrayers++;
+                        }
+                    }
+                }
+                
+                values.push(dayPrayers);
+            }
+            
+            return { labels, values };
+        }
+        
+        // دالة للحصول على بيانات الصلوات السنوية
+        function getYearlyPrayerData() {
+            const labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                          'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+            const values = [];
+            
+            for (let month = 1; month <= 12; month++) {
+                let monthPrayers = 0;
+                
+                const startOfMonth = new Date(currentViewYear, month - 1, 1);
+                const endOfMonth = new Date(currentViewYear, month, 0);
+                
+                for (const date in prayerData.history) {
+                    const dateObj = new Date(date);
+                    if (dateObj >= startOfMonth && dateObj <= endOfMonth) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                monthPrayers++;
+                            }
+                        }
+                    }
+                }
+                
+                values.push(monthPrayers);
+            }
+            
+            return { labels, values };
+        }
+        
+        // دالة إنشاء المخططات مع الحجم المناسب
+        function createCharts() {
+            const monthlyData = getMonthlyPrayerData();
+            const yearlyData = getYearlyPrayerData();
+            
+            // تدمير المخططات القديمة إذا كانت موجودة
+            if (window.monthlyChartInstance) {
+                window.monthlyChartInstance.destroy();
+            }
+            if (window.yearlyChartInstance) {
+                window.yearlyChartInstance.destroy();
+            }
+            
+            // مخطط الشهر
+            const monthlyCanvas = document.getElementById('monthlyChart');
+            const monthlyCtx = monthlyCanvas.getContext('2d');
+            
+            // تعيين حجم المخطط
+            monthlyCanvas.width = monthlyCanvas.parentElement.offsetWidth;
+            monthlyCanvas.height = 250;
+            
+            window.monthlyChartInstance = new Chart(monthlyCtx, {
+                type: 'line',
+                data: {
+                    labels: monthlyData.labels,
+                    datasets: [{
+                        label: 'عدد الصلوات',
+                        data: monthlyData.values,
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'عدد الصلوات'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'أيام الشهر'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // مخطط السنة
+            const yearlyCanvas = document.getElementById('yearlyChart');
+            const yearlyCtx = yearlyCanvas.getContext('2d');
+            
+            // تعيين حجم المخطط
+            yearlyCanvas.width = yearlyCanvas.parentElement.offsetWidth;
+            yearlyCanvas.height = 250;
+            
+            window.yearlyChartInstance = new Chart(yearlyCtx, {
+                type: 'line',
+                data: {
+                    labels: yearlyData.labels,
+                    datasets: [{
+                        label: 'عدد الصلوات',
+                        data: yearlyData.values,
+                        borderColor: '#2196F3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'عدد الصلوات'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'أشهر السنة'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // تحديث عرض المخططات
+        function updateCharts() {
+            document.getElementById('chartMonthLabel').textContent = `(شهر ${currentViewMonth})`;
+            document.getElementById('chartYearLabel').textContent = `(${currentViewYear})`;
+            createCharts();
+        }
+        
+        // ==============================
+        // دوال العرض والواجهة
+        // ==============================
+        
+        // تحديث واجهة المستخدم
+        function updateUI() {
+            try {
+                const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+                prayers.forEach(prayer => {
+                    const item = document.getElementById(prayer);
+                    const checkbox = item.querySelector('.checkbox');
+                    const mosqueSelect = item.querySelector('.mosque-select');
+                    const prayerName = item.querySelector('.prayer-name');
+                    
+                    checkbox.checked = prayerData.daily.prayers[prayer].checked;
+                    mosqueSelect.value = prayerData.daily.prayers[prayer].mosque;
+                    
+                    if (checkbox.checked) {
+                        prayerName.classList.add('checked');
+                    } else {
+                        prayerName.classList.remove('checked');
+                    }
+                });
+                
+                updateMosqueSelects();
+                updateMosqueList();
+                updateStats();
+            } catch (error) {
+                console.error('❌ خطأ في تحديث الواجهة:', error);
+            }
+        }
+        
+        // تحديث الإحصائيات
+        function updateStats() {
+            try {
+                const weeklyStats = calculateWeeklyStats();
+                const monthlyStats = calculateMonthlyStats();
+                const yearlyStats = calculateYearlyStats();
+                const totalStats = calculateTotalStats();
+                
+                document.getElementById('weeklyPrayers').textContent = weeklyStats.prayers;
+                document.getElementById('weeklySteps').textContent = weeklyStats.steps;
+                displayMosqueStats('weeklyMosqueStats', weeklyStats.mosqueCounts);
+                
+                document.getElementById('monthlyPrayers').textContent = monthlyStats.prayers;
+                document.getElementById('monthlySteps').textContent = monthlyStats.steps;
+                displayMosqueStats('monthlyMosqueStats', monthlyStats.mosqueCounts);
+                
+                document.getElementById('yearlyPrayers').textContent = yearlyStats.prayers;
+                document.getElementById('yearlySteps').textContent = yearlyStats.steps;
+                displayMosqueStats('yearlyMosqueStats', yearlyStats.mosqueCounts);
+                
+                document.getElementById('totalPrayers').textContent = totalStats.prayers;
+                document.getElementById('totalSteps').textContent = totalStats.steps;
+                
+                displayPrayerDetailsStats(totalStats.prayerCounts);
+                displayMosqueStats('totalMosqueStats', totalStats.mosqueCounts);
+            } catch (error) {
+                console.error('❌ خطأ في تحديث الإحصائيات:', error);
+            }
+        }
+        
+        // عرض إحصائيات تفصيلية للصلوات
+        function displayPrayerDetailsStats(prayerCounts) {
+            const element = document.getElementById('prayerDetailsStats');
+            element.innerHTML = '';
+            
+            const prayerNames = {
+                fajr: 'الفجر',
+                dhuhr: 'الظهر',
+                asr: 'العصر',
+                maghrib: 'المغرب',
+                isha: 'العشاء'
+            };
+            
+            for (const prayer in prayerCounts) {
+                const statItem = document.createElement('div');
+                statItem.className = 'prayer-stat-item';
+                statItem.innerHTML = `
+                    <span class="prayer-stat-name">${prayerNames[prayer]}</span>
+                    <span class="prayer-stat-count">${prayerCounts[prayer]} مرة</span>
+                `;
+                element.appendChild(statItem);
+            }
+        }
+        
+        // عرض إحصائيات المساجد
+        function displayMosqueStats(elementId, mosqueCounts) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            
+            for (const mosqueName in prayerData.mosques) {
+                const count = mosqueCounts[mosqueName] || 0;
+                const statItem = document.createElement('div');
+                statItem.className = 'mosque-stat-item';
+                statItem.innerHTML = `
+                    <span class="mosque-stat-name">${mosqueName}</span>
+                    <span class="mosque-stat-count">${count} صلاة</span>
+                `;
+                element.appendChild(statItem);
+            }
+        }
+
+        // ✅ إصلاح تصدير البيانات
+        function exportData() {
+            try {
+                // أولاً، حفظ البيانات الحالية
+                if (!saveData()) {
+                    return;
+                }
+                
+                const dataStr = JSON.stringify(prayerData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const fileName = `prayer-data-${new Date().toISOString().split('T')[0]}.json`;
+
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+
+                setTimeout(() => {
+                    URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                }, 1000);
+
+                alert('تم حفظ الملف بنجاح. تحقق من مجلد التنزيلات.');
+            } catch (error) {
+                console.error('❌ خطأ في تصدير البيانات:', error);
+                alert('حدث خطأ أثناء تصدير البيانات. يرجى المحاولة مرة أخرى.');
+            }
+        }
+
+        // ✅ إصلاح استيراد البيانات
+        function importData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const loadedData = JSON.parse(e.target.result);
+                    
+                    // التحقق من بنية البيانات
+                    if (!loadedData.history || !loadedData.mosques || !loadedData.daily) {
+                        throw new Error('ملف البيانات غير صالح');
+                    }
+                    
+                    prayerData = loadedData;
+                    loadDateData();
+                    saveData(); // حفظ بعد التحميل
+                    alert('تم تحميل البيانات بنجاح');
+                } catch (error) {
+                    console.error('❌ خطأ في تحميل البيانات:', error);
+                    alert('خطأ في تحميل البيانات. تأكد من صحة الملف.');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // ==============================
+        // ✅ إعداد مستمعي الأحداث المعدلة ✅
+        // ==============================
+        
+        function setupEventListeners() {
+            const prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+            prayers.forEach(prayer => {
+                const item = document.getElementById(prayer);
+                const checkbox = item.querySelector('.checkbox');
+                const mosqueSelect = item.querySelector('.mosque-select');
+                const prayerName = item.querySelector('.prayer-name');
+                
+                checkbox.addEventListener('change', function() {
+                    prayerData.daily.prayers[prayer].checked = this.checked;
+                    
+                    if (this.checked) {
+                        prayerName.classList.add('checked');
+                    } else {
+                        prayerName.classList.remove('checked');
+                        prayerData.daily.prayers[prayer].mosque = '';
+                        mosqueSelect.value = '';
+                    }
+                    
+                    updateStats();
+                    updateComparisons();
+                    saveData();
+                });
+                
+                mosqueSelect.addEventListener('change', function() {
+                    prayerData.daily.prayers[prayer].mosque = this.value;
+                    if (this.value && !prayerData.daily.prayers[prayer].checked) {
+                        prayerData.daily.prayers[prayer].checked = true;
+                        checkbox.checked = true;
+                        prayerName.classList.add('checked');
+                    }
+                    updateStats();
+                    updateComparisons();
+                    saveData();
+                });
+            });
+            
+            document.getElementById('addMosque').addEventListener('click', function() {
+                const mosqueName = document.getElementById('mosqueName').value.trim();
+                const mosqueSteps = parseInt(document.getElementById('mosqueSteps').value);
+
+                if (mosqueName && !isNaN(mosqueSteps) && mosqueSteps >= 0) {
+                    prayerData.mosques[mosqueName] = mosqueSteps;
+                    document.getElementById('mosqueName').value = '';
+                    document.getElementById('mosqueSteps').value = '';
+                    updateUI();
+                    if (saveData()) {
+                        alert('تم إضافة المسجد بنجاح');
+                    }
+                } else {
+                    alert('يرجى إدخال اسم المسجد وعدد الخطوات بشكل صحيح');
+                }
+            });
+
+            document.getElementById('updateMosque').addEventListener('click', updateMosque);
+            document.getElementById('cancelEdit').addEventListener('click', cancelEdit);
+            
+            document.getElementById('prevYear').addEventListener('click', function() {
+                currentViewYear--;
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('nextYear').addEventListener('click', function() {
+                currentViewYear++;
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('prevMonth').addEventListener('click', function() {
+                currentViewMonth--;
+                if (currentViewMonth < 1) {
+                    currentViewMonth = 12;
+                    currentViewYear--;
+                }
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('nextMonth').addEventListener('click', function() {
+                currentViewMonth++;
+                if (currentViewMonth > 12) {
+                    currentViewMonth = 1;
+                    currentViewYear++;
+                }
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('prevWeek').addEventListener('click', function() {
+                currentViewWeek--;
+                if (currentViewWeek < 1) {
+                    currentViewWeek = 52;
+                    currentViewYear--;
+                }
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('nextWeek').addEventListener('click', function() {
+                currentViewWeek++;
+                if (currentViewWeek > 52) {
+                    currentViewWeek = 1;
+                    currentViewYear++;
+                }
+                updateNavigationDisplay();
+            });
+            
+            document.getElementById('datePicker').addEventListener('change', loadDateData);
+            
+            document.getElementById('saveDate').addEventListener('click', function() {
+                if (saveData()) {
+                    alert('تم حفظ بيانات اليوم بنجاح');
+                }
+            });
+            
+            document.getElementById('saveData').addEventListener('click', exportData);
+            
+            document.getElementById('loadData').addEventListener('click', function() {
+                document.getElementById('fileInput').click();
+            });
+            
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                        importData(file);
+                    } else {
+                        alert('يرجى اختيار ملف JSON صالح');
+                    }
+                }
+            });
+            
+            // إعادة رسم المخططات عند تغيير حجم النافذة
+            window.addEventListener('resize', function() {
+                updateCharts();
+            });
+        }
+        
+        // تهيئة التطبيق
+        function init() {
+            loadData();
+            setupEventListeners();
+            updateUI();
+            updateNavigationDisplay();
+            
+            // إضافة رسالة ترحيب في الكونسول
+            console.log('🚀 تطبيق متابعة الصلاة جاهز للاستخدام');
+            console.log('📊 البيانات المحفوظة:', Object.keys(prayerData.history).length, 'يوم');
+        }
+        
+        // تشغيل التطبيق
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
