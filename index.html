@@ -495,6 +495,7 @@
             justify-content: space-between;
             border: 1px solid #e0e0e0;
             flex-shrink: 0;
+            display: none; /* إخفاء قسم نوع المقارنة */
         }
 
         .period-label {
@@ -523,13 +524,9 @@
             color: #757575;
         }
 
-        /* تدرج الألوان في المخططات */
+        /* إزالة أنماط تدرج الألوان في المخططات */
         .chart-legend {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-            gap: 15px;
-            flex-shrink: 0;
+            display: none; /* إخفاء وسيلة الإيضاح */
         }
 
         .legend-item {
@@ -721,9 +718,9 @@
         <div class="comparison-box">
             <div class="stat-title">مقارنة الأسبوع الحالي بالأسبوع الماضي</div>
             <div class="comparison-content">
-                <div class="comparison-period">
+                <div class="comparison-period" style="display: none;">
                     <div class="period-label">نوع المقارنة:</div>
-                    <div class="period-value">يوم بيوم</div>
+                    <div class="period-value">الأسبوع الحالي حتى اليوم مقابل الأسبوع الماضي كامل</div>
                 </div>
                 <div class="comparison-item">
                     <div class="comparison-label">
@@ -767,9 +764,9 @@
         <div class="comparison-box">
             <div class="stat-title">مقارنة الشهر الحالي بالشهر الماضي</div>
             <div class="comparison-content">
-                <div class="comparison-period">
+                <div class="comparison-period" style="display: none;">
                     <div class="period-label">نوع المقارنة:</div>
-                    <div class="period-value">عداد تنازلي</div>
+                    <div class="period-value">هذا الشهر حتى الآن مقابل الشهر الماضي كامل</div>
                 </div>
                 <div class="comparison-item">
                     <div class="comparison-label">
@@ -798,20 +795,7 @@
             <div class="chart-wrapper">
                 <canvas id="monthlyChart"></canvas>
             </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f44336;"></div>
-                    <div class="legend-text">قليلة</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #FF9800;"></div>
-                    <div class="legend-text">متوسطة</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #4CAF50;"></div>
-                    <div class="legend-text">كثيرة</div>
-                </div>
-            </div>
+            <!-- تم إزالة وسيلة الإيضاح -->
         </div>
         
         <!-- ========== بيانات السنة ========== -->
@@ -835,9 +819,9 @@
         <div class="comparison-box">
             <div class="stat-title">مقارنة السنة الحالية بالسنة الماضية</div>
             <div class="comparison-content">
-                <div class="comparison-period">
+                <div class="comparison-period" style="display: none;">
                     <div class="period-label">نوع المقارنة:</div>
-                    <div class="period-value">عداد تنازلي</div>
+                    <div class="period-value">هذه السنة حتى الآن مقابل السنة الماضية كاملة</div>
                 </div>
                 <div class="comparison-item">
                     <div class="comparison-label">
@@ -866,20 +850,7 @@
             <div class="chart-wrapper">
                 <canvas id="yearlyChart"></canvas>
             </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f44336;"></div>
-                    <div class="legend-text">قليلة</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #FF9800;"></div>
-                    <div class="legend-text">متوسطة</div>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #4CAF50;"></div>
-                    <div class="legend-text">كثيرة</div>
-                </div>
-            </div>
+            <!-- تم إزالة وسيلة الإيضاح -->
         </div>
         
         <!-- البيانات الكلية المضافة -->
@@ -1058,7 +1029,6 @@
                 const savedData = localStorage.getItem('prayerTrackerData');
                 if (savedData) {
                     prayerData = JSON.parse(savedData);
-                    // تحويل التواريخ القديمة إذا لزم الأمر
                     convertOldData();
                     loadDateData();
                     console.log('✅ البيانات تم تحميلها بنجاح');
@@ -1084,9 +1054,8 @@
             }
         }
         
-        // تحويل البيانات القديمة إذا لزم الأمر
+        // تحويل البيانات القديمة
         function convertOldData() {
-            // التأكد من أن بنية البيانات صحيحة
             if (!prayerData.history) prayerData.history = {};
             if (!prayerData.mosques) prayerData.mosques = {};
             if (!prayerData.daily) {
@@ -1110,7 +1079,6 @@
                 prayerData.daily.date = selectedDate;
                 
                 if (prayerData.history[selectedDate]) {
-                    // التأكد من أن بنية الصلوات كاملة
                     const savedPrayers = prayerData.history[selectedDate].prayers;
                     prayerData.daily.prayers = {
                         fajr: savedPrayers.fajr || { checked: false, mosque: '' },
@@ -1120,7 +1088,6 @@
                         isha: savedPrayers.isha || { checked: false, mosque: '' }
                     };
                 } else {
-                    // إذا لم تكن هناك بيانات، قم بتهيئة البيانات الافتراضية
                     prayerData.daily.prayers = {
                         fajr: { checked: false, mosque: '' },
                         dhuhr: { checked: false, mosque: '' },
@@ -1136,10 +1103,9 @@
             }
         }
         
-        // حفظ البيانات إلى localStorage
+        // حفظ البيانات
         function saveData() {
             try {
-                // حفظ بيانات اليوم في التاريخ
                 prayerData.history[prayerData.daily.date] = {
                     prayers: JSON.parse(JSON.stringify(prayerData.daily.prayers))
                 };
@@ -1158,7 +1124,7 @@
         // دوال التنقل والعرض
         // ==============================
         
-        // تحديث عرض الشهر والسنة والأسبوع
+        // تحديث العرض
         function updateNavigationDisplay() {
             document.getElementById('yearDisplay').textContent = `السنة ${currentViewYear}`;
             document.getElementById('monthDisplay').textContent = `شهر ${currentViewMonth} - ${currentViewYear}`;
@@ -1168,7 +1134,7 @@
             updateCharts();
         }
 
-        // التحقق مما إذا كان التاريخ يقع ضمن الأسبوع المعروض
+        // التحقق من الأسبوع
         function isDateInCurrentWeek(dateStr) {
             try {
                 const weekRange = getCurrentWeekRange();
@@ -1184,18 +1150,18 @@
             }
         }
 
-        // الحصول على نطاق الأسبوع المعروض
+        // الحصول على نطاق الأسبوع
         function getCurrentWeekRange() {
             const startDate = getDateOfWeek(currentViewWeek, currentViewYear);
             return getWeekRange(startDate);
         }
 
-        // التحقق مما إذا كان التاريخ يقع ضمن الشهر المعروض
+        // التحقق من الشهر
         function isDateInCurrentMonth(dateStr) {
             try {
                 const date = new Date(dateStr);
                 const dateYear = date.getFullYear();
-                const dateMonth = date.getMonth() + 1; // 1-12
+                const dateMonth = date.getMonth() + 1;
                 
                 return dateYear === currentViewYear && dateMonth === currentViewMonth;
             } catch (error) {
@@ -1203,7 +1169,7 @@
             }
         }
 
-        // التحقق مما إذا كان التاريخ يقع ضمن السنة المعروضة
+        // التحقق من السنة
         function isDateInCurrentYear(dateStr) {
             try {
                 const date = new Date(dateStr);
@@ -1229,13 +1195,11 @@
         // دوال المساجد
         // ==============================
         
-        // تحديث قائمة المساجد في القوائم المنسدلة
+        // تحديث قائمة المساجد
         function updateMosqueSelects() {
             const selects = document.querySelectorAll('.mosque-select');
             selects.forEach(select => {
                 const currentValue = select.value;
-                
-                // حفظ الخيار الأول فقط
                 const firstOption = select.options[0];
                 select.innerHTML = '';
                 select.appendChild(firstOption);
@@ -1253,7 +1217,7 @@
             });
         }
         
-        // تحديث قائمة المساجد في واجهة الإدارة
+        // تحديث قائمة المساجد
         function updateMosqueList() {
             const mosqueList = document.getElementById('mosqueList');
             mosqueList.innerHTML = '';
@@ -1298,14 +1262,13 @@
             document.getElementById('cancelEdit').style.display = 'inline-block';
         }
 
-        // تحديث المسجد
+        // تحديث مسجد
         function updateMosque() {
             const newName = document.getElementById('mosqueName').value.trim();
             const newSteps = parseInt(document.getElementById('mosqueSteps').value);
 
             if (newName && !isNaN(newSteps) && newSteps >= 0) {
                 if (newName !== currentEditingMosque) {
-                    // تحديث جميع السجلات التاريخية
                     for (const date in prayerData.history) {
                         for (const prayer in prayerData.history[date].prayers) {
                             if (prayerData.history[date].prayers[prayer].mosque === currentEditingMosque) {
@@ -1314,7 +1277,6 @@
                         }
                     }
 
-                    // تحديث بيانات اليوم الحالي
                     for (const prayer in prayerData.daily.prayers) {
                         if (prayerData.daily.prayers[prayer].mosque === currentEditingMosque) {
                             prayerData.daily.prayers[prayer].mosque = newName;
@@ -1371,17 +1333,23 @@
         }
         
         // ==============================
-        // دوال الحسابات الأساسية
+        // ✅ ✅ ✅ ✅ إصلاح المشكلة 1 ✅ ✅ ✅ ✅
         // ==============================
+        // مشكلة: بيانات المساجد الأسبوعية تظهر ضعف الرقم
         
-        // حساب إحصائيات الأسبوع المعروض
+        // حساب إحصائيات الأسبوع المعروض (بدون تضاعف البيانات)
         function calculateWeeklyStats() {
             let weeklyPrayers = 0;
             let weeklySteps = 0;
             const mosqueCounts = {};
             
+            // ✅ ✅ ✅ ✅ إصلاح: استخدام مجموعة لتجنب حساب اليوم مرتين ✅ ✅ ✅ ✅
+            const processedDates = new Set();
+            
+            // حساب من البيانات التاريخية
             for (const date in prayerData.history) {
                 if (isDateInCurrentWeek(date)) {
+                    processedDates.add(date);
                     const dayData = prayerData.history[date];
                     for (const prayer in dayData.prayers) {
                         if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
@@ -1394,8 +1362,12 @@
                 }
             }
             
+            // ✅ ✅ ✅ ✅ إصلاح: إضافة بيانات اليوم الحالي فقط إذا لم تكن محفوظة بالفعل ✅ ✅ ✅ ✅
             const todayDateStr = prayerData.daily.date;
-            if (!prayerData.history[todayDateStr] && isDateInCurrentWeek(todayDateStr)) {
+            
+            // إذا كان اليوم الحالي ضمن الأسبوع الحالي ولم يتم معالجته مسبقاً
+            if (isDateInCurrentWeek(todayDateStr) && !processedDates.has(todayDateStr)) {
+                // حساب بيانات اليوم الحالي
                 for (const prayer in prayerData.daily.prayers) {
                     if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
                         weeklyPrayers++;
@@ -1413,7 +1385,58 @@
             };
         }
         
-        // حساب إحصائيات الشهر الحالي المعروض
+        // ✅ ✅ ✅ ✅ دالة جديدة: حساب الصلوات حتى اليوم الحالي في الأسبوع الحالي (للمقارنة)
+        function calculateCurrentWeekUntilTodayForComparison() {
+            let prayers = 0;
+            const processedDates = new Set();
+            
+            try {
+                const today = new Date();
+                const currentWeek = getWeekNumber(today);
+                const currentYear = today.getFullYear();
+                
+                // فقط إذا كان الأسبوع المعروض هو الأسبوع الحالي
+                if (currentViewWeek !== currentWeek || currentViewYear !== currentYear) {
+                    return 0;
+                }
+                
+                const startDate = getDateOfWeek(currentWeek, currentYear);
+                const currentDayOfWeek = today.getDay(); // 0 = الأحد
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + currentDayOfWeek);
+                endDate.setHours(23, 59, 59, 999);
+                
+                // حساب من البيانات التاريخية
+                for (const date in prayerData.history) {
+                    const dateObj = new Date(date);
+                    if (dateObj >= startDate && dateObj <= endDate) {
+                        processedDates.add(date);
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+                
+                // ✅ ✅ ✅ ✅ إضافة بيانات اليوم الحالي غير المحفوظة
+                const todayDateStr = formatLocalDate(today);
+                if (!processedDates.has(todayDateStr)) {
+                    for (const prayer in prayerData.daily.prayers) {
+                        if (prayerData.daily.prayers[prayer].checked && prayerData.daily.prayers[prayer].mosque) {
+                            prayers++;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('❌ خطأ في حساب الأسبوع الحالي حتى اليوم:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // حساب إحصائيات الشهر
         function calculateMonthlyStats() {
             let monthlyPrayers = 0;
             let monthlySteps = 0;
@@ -1452,7 +1475,7 @@
             };
         }
         
-        // حساب إحصائيات السنة الحالية المعروضة
+        // حساب إحصائيات السنة
         function calculateYearlyStats() {
             let yearlyPrayers = 0;
             let yearlySteps = 0;
@@ -1517,7 +1540,6 @@
                 }
             }
             
-            // إضافة بيانات اليوم الحالي إذا لم تكن محفوظة بعد
             const todayDateStr = prayerData.daily.date;
             const todayInHistory = prayerData.history[todayDateStr];
             
@@ -1542,81 +1564,17 @@
         }
         
         // ==============================
-        // ✅ دوال المقارنات الجديدة ✅
+        // ✅ ✅ ✅ ✅ إصلاح المشكلة 2 ✅ ✅ ✅ ✅
         // ==============================
         
-        // 1. دالة لحساب الصلوات في أسبوع كامل
-        function calculateStatsForFullWeek(week, year) {
-            let prayers = 0;
-            
-            try {
-                const startDate = getDateOfWeek(week, year);
-                const weekRange = getWeekRange(startDate);
-                const startTime = new Date(weekRange.start).getTime();
-                const endTime = new Date(weekRange.end).getTime();
-                
-                for (const date in prayerData.history) {
-                    const dateTime = new Date(date).getTime();
-                    if (dateTime >= startTime && dateTime <= endTime) {
-                        const dayData = prayerData.history[date];
-                        for (const prayer in dayData.prayers) {
-                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
-                                prayers++;
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('خطأ في حساب أسبوع كامل:', error);
-            }
-            
-            return prayers;
-        }
-        
-        // 2. دالة لحساب الصلوات حتى اليوم الحالي في الأسبوع الحالي فقط
-        function calculateCurrentWeekUntilToday() {
-            let prayers = 0;
-            
-            try {
-                const today = new Date();
-                const currentWeek = getWeekNumber(today);
-                const currentYear = today.getFullYear();
-                
-                // فقط إذا كان الأسبوع المعروض هو الأسبوع الحالي
-                if (currentViewWeek !== currentWeek || currentViewYear !== currentYear) {
-                    return 0;
-                }
-                
-                const startDate = getDateOfWeek(currentWeek, currentYear);
-                const currentDayOfWeek = today.getDay(); // 0 = الأحد
-                const endDate = new Date(startDate);
-                endDate.setDate(startDate.getDate() + currentDayOfWeek);
-                
-                for (const date in prayerData.history) {
-                    const dateObj = new Date(date);
-                    if (dateObj >= startDate && dateObj <= endDate) {
-                        const dayData = prayerData.history[date];
-                        for (const prayer in dayData.prayers) {
-                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
-                                prayers++;
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('خطأ في حساب الأسبوع الحالي حتى اليوم:', error);
-            }
-            
-            return prayers;
-        }
-        
-        // 3. دالة لحساب إجمالي صلوات شهر كامل
-        function calculateFullMonthStats(month, year) {
+        // ✅ دالة جديدة: حساب إجمالي صلوات شهر كامل (بدون أخطاء)
+        function calculateFullMonthStatsFixed(month, year) {
             let prayers = 0;
             
             try {
                 const startOfMonth = new Date(year, month - 1, 1);
                 const endOfMonth = new Date(year, month, 0);
+                endOfMonth.setHours(23, 59, 59, 999);
                 
                 for (const date in prayerData.history) {
                     const dateObj = new Date(date);
@@ -1630,19 +1588,20 @@
                     }
                 }
             } catch (error) {
-                console.error('خطأ في حساب شهر كامل:', error);
+                console.error('❌ خطأ في حساب شهر كامل:', error);
             }
             
             return prayers;
         }
         
-        // 4. دالة لحساب إجمالي صلوات سنة كاملة
-        function calculateFullYearStats(year) {
+        // ✅ دالة جديدة: حساب إجمالي صلوات سنة كاملة (بدون أخطاء)
+        function calculateFullYearStatsFixed(year) {
             let prayers = 0;
             
             try {
                 const startOfYear = new Date(year, 0, 1);
                 const endOfYear = new Date(year, 11, 31);
+                endOfYear.setHours(23, 59, 59, 999);
                 
                 for (const date in prayerData.history) {
                     const dateObj = new Date(date);
@@ -1656,26 +1615,59 @@
                     }
                 }
             } catch (error) {
-                console.error('خطأ في حساب سنة كاملة:', error);
+                console.error('❌ خطأ في حساب سنة كاملة:', error);
             }
             
             return prayers;
         }
         
-        // 5. دالة تحديث المقارنات حسب النظام الجديد
+        // ✅ دالة جديدة: حساب الصلوات في أسبوع كامل (بدون أخطاء)
+        function calculateStatsForFullWeekFixed(week, year) {
+            let prayers = 0;
+            
+            try {
+                const startDate = getDateOfWeek(week, year);
+                const weekRange = getWeekRange(startDate);
+                const startTime = new Date(weekRange.start).getTime();
+                const endTime = new Date(weekRange.end).getTime();
+                const endDate = new Date(weekRange.end);
+                endDate.setHours(23, 59, 59, 999);
+                
+                for (const date in prayerData.history) {
+                    const dateTime = new Date(date).getTime();
+                    if (dateTime >= startTime && dateTime <= endTime) {
+                        const dayData = prayerData.history[date];
+                        for (const prayer in dayData.prayers) {
+                            if (dayData.prayers[prayer].checked && dayData.prayers[prayer].mosque) {
+                                prayers++;
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('❌ خطأ في حساب أسبوع كامل:', error);
+            }
+            
+            return prayers;
+        }
+        
+        // ✅ ✅ ✅ ✅ دالة تحديث المقارنات المصلحة ✅ ✅ ✅ ✅
         function updateComparisons() {
             try {
                 const today = new Date();
                 const currentDay = today.getDate();
+                const currentMonth = today.getMonth() + 1;
+                const currentYear = today.getFullYear();
+                const currentWeek = getWeekNumber(today);
                 
                 // ========== الأسبوع ==========
-                // الأسبوع الحالي: حتى اليوم الحالي فقط
-                const currentWeekPrayersUntilToday = calculateCurrentWeekUntilToday();
+                // ✅ إصلاح: الأسبوع الحالي حتى اليوم (بما في ذلك اليوم الحالي غير المحفوظ)
+                const currentWeekPrayersUntilToday = calculateCurrentWeekUntilTodayForComparison();
                 
-                // الأسبوع الماضي: أسبوع كامل
-                const lastWeekYear = currentViewWeek === 1 ? currentViewYear - 1 : currentViewYear;
-                const lastWeek = currentViewWeek === 1 ? 52 : currentViewWeek - 1;
-                const lastWeekFullPrayers = calculateStatsForFullWeek(lastWeek, lastWeekYear);
+                // ✅ إصلاح: الأسبوع الماضي كامل (بدون أخطاء)
+                const lastWeekYear = currentWeek === 1 ? currentYear - 1 : currentYear;
+                const lastWeek = currentWeek === 1 ? 52 : currentWeek - 1;
+                const lastWeekFullPrayers = calculateStatsForFullWeekFixed(lastWeek, lastWeekYear);
                 
                 // تحديث عرض الأسبوع
                 document.getElementById('currentWeekPrayers').textContent = currentWeekPrayersUntilToday;
@@ -1684,18 +1676,17 @@
                 document.getElementById('lastWeekInfo').textContent = 'أسبوع كامل';
                 
                 const weekDiff = currentWeekPrayersUntilToday - lastWeekFullPrayers;
-                updateComparisonDisplay('weekComparison', 'weekComparisonDetails', weekDiff, 'صلاة', 
-                                      'الأسبوع الحالي حتى اليوم مقابل الأسبوع الماضي كامل');
+                updateComparisonDisplay('weekComparison', 'weekComparisonDetails', weekDiff, 'صلاة');
                 
                 // ========== الشهر ==========
-                // الشهر الحالي: حتى الآن
+                // ✅ إصلاح: الشهر الحالي حتى الآن (بما في ذلك اليوم الحالي)
                 const currentMonthStats = calculateMonthlyStats();
                 const currentMonthPrayersSoFar = currentMonthStats.prayers;
                 
-                // الشهر الماضي: شهر كامل
-                const lastMonthYear = currentViewMonth === 1 ? currentViewYear - 1 : currentViewYear;
-                const lastMonth = currentViewMonth === 1 ? 12 : currentViewMonth - 1;
-                const lastMonthFullPrayers = calculateFullMonthStats(lastMonth, lastMonthYear);
+                // ✅ ✅ ✅ ✅ إصلاح: الشهر الماضي كامل (بدون أخطاء) ✅ ✅ ✅ ✅
+                const lastMonthYear = currentMonth === 1 ? currentYear - 1 : currentYear;
+                const lastMonth = currentMonth === 1 ? 12 : currentMonth - 1;
+                const lastMonthFullPrayers = calculateFullMonthStatsFixed(lastMonth, lastMonthYear);
                 
                 // تحديث عرض الشهر
                 document.getElementById('currentMonthPrayers').textContent = currentMonthPrayersSoFar;
@@ -1704,16 +1695,15 @@
                 document.getElementById('lastMonthInfo').textContent = 'شهر كامل';
                 
                 const monthDiff = currentMonthPrayersSoFar - lastMonthFullPrayers;
-                updateComparisonDisplay('monthComparison', 'monthComparisonDetails', monthDiff, 'صلاة', 
-                                      'عداد تنازلي: تحتاج إلى تخطي إجمالي الشهر الماضي');
+                updateComparisonDisplay('monthComparison', 'monthComparisonDetails', monthDiff, 'صلاة');
                 
                 // ========== السنة ==========
-                // السنة الحالية: حتى الآن
+                // ✅ إصلاح: السنة الحالية حتى الآن
                 const currentYearStats = calculateYearlyStats();
                 const currentYearPrayersSoFar = currentYearStats.prayers;
                 
-                // السنة الماضية: سنة كاملة
-                const lastYearFullPrayers = calculateFullYearStats(currentViewYear - 1);
+                // ✅ ✅ ✅ ✅ إصلاح: السنة الماضية كاملة (بدون أخطاء) ✅ ✅ ✅ ✅
+                const lastYearFullPrayers = calculateFullYearStatsFixed(currentYear - 1);
                 
                 // تحديث عرض السنة
                 document.getElementById('currentYearPrayers').textContent = currentYearPrayersSoFar;
@@ -1722,15 +1712,15 @@
                 document.getElementById('lastYearInfo').textContent = 'سنة كاملة';
                 
                 const yearDiff = currentYearPrayersSoFar - lastYearFullPrayers;
-                updateComparisonDisplay('yearComparison', 'yearComparisonDetails', yearDiff, 'صلاة', 
-                                      'عداد تنازلي: تحتاج إلى تخطي إجمالي السنة الماضية');
+                updateComparisonDisplay('yearComparison', 'yearComparisonDetails', yearDiff, 'صلاة');
+                
             } catch (error) {
                 console.error('❌ خطأ في تحديث المقارنات:', error);
             }
         }
         
-        // 6. دالة تحديث عرض المقارنة
-        function updateComparisonDisplay(elementId, detailsId, diff, unit, description) {
+        // دالة تحديث عرض المقارنة (محدثة)
+        function updateComparisonDisplay(elementId, detailsId, diff, unit) {
             const element = document.getElementById(elementId);
             const details = document.getElementById(detailsId);
             
@@ -1739,23 +1729,66 @@
             if (diff > 0) {
                 element.classList.add('positive');
                 element.innerHTML = `<span>+${diff} ${unit}</span>`;
-                details.textContent = `ممتاز! أنت متقدم ${diff} ${unit} عن الفترة الماضية. ${description}`;
+                details.textContent = `ممتاز! أنت متقدم ${diff} ${unit} عن الفترة الماضية.`;
             } else if (diff < 0) {
                 element.classList.add('negative');
                 element.innerHTML = `<span>${diff} ${unit}</span>`;
-                details.textContent = `تحتاج إلى ${Math.abs(diff)} ${unit} إضافية لتتخطى الفترة الماضية. ${description}`;
+                
+                // ✅ ✅ ✅ ✅ تغيير الرسائل حسب نوع الفترة ✅ ✅ ✅ ✅
+                const absDiff = Math.abs(diff);
+                let message = '';
+                
+                if (elementId === 'weekComparison') {
+                    message = `تحتاج إلى الذهاب لـ ${absDiff} صلاة بالمسجد لتتخطى الأسبوع الماضي.`;
+                } else if (elementId === 'monthComparison') {
+                    message = `تحتاج إلى الذهاب لـ ${absDiff} صلاة بالمسجد لتتخطى الشهر الماضي.`;
+                } else if (elementId === 'yearComparison') {
+                    message = `تحتاج إلى الذهاب لـ ${absDiff} صلاة بالمسجد لتتخطى السنة الماضية.`;
+                } else {
+                    message = `تحتاج إلى ${absDiff} ${unit} إضافية لتتخطى الفترة الماضية.`;
+                }
+                
+                details.textContent = message;
             } else {
                 element.classList.add('neutral');
                 element.innerHTML = `<span>متساوي</span>`;
-                details.textContent = `أنت في نفس مستوى الفترة الماضية. ${description}`;
+                details.textContent = `أنت في نفس مستوى الفترة الماضية.`;
             }
         }
         
         // ==============================
-        // ✅ دوال المخططات البيانية المعدلة ✅
+        // ✅ دالة جديدة للحصول على اللون حسب عدد الصلوات (للمخطط الشهري)
         // ==============================
         
-        // دالة للحصول على بيانات الصلوات الشهرية
+        function getColorByPrayerCount(count) {
+            if (count === 0) return '#F44336'; // أحمر
+            if (count === 1) return '#FF7043'; // أحمر مائل للبرتقالي
+            if (count === 2) return '#FFB300'; // برتقالي مائل للأصفر
+            if (count === 3) return '#C0CA33'; // أصفر مائل للأخضر
+            if (count === 4) return '#66BB6A'; // أخضر
+            if (count >= 5) return '#1B5E20';  // أخضر غامق جدًا
+        }
+
+        // ✅ دالة جديدة للحصول على اللون حسب المجموع الشهري (للمخطط السنوي)
+        function getColorByMonthlyTotal(count) {
+            if (count <= 30) return '#F44336'; // أحمر
+            if (count <= 60) return '#FF7043'; // أحمر مائل للبرتقالي
+            if (count <= 90) return '#FFB300'; // برتقالي مائل للأصفر
+            if (count <= 120) return '#9CCC65'; // أصفر مائل للأخضر
+            return '#1B5E20'; // أخضر غامق (121 فأكثر)
+        }
+
+        // ✅ دالة جديدة لإنشاء مصفوفة الألوان للدوائر (للمخطط الشهري)
+        function createMonthlyPointColors(prayerValues) {
+            return prayerValues.map(value => getColorByPrayerCount(value));
+        }
+        
+        // ✅ دالة جديدة لإنشاء مصفوفة الألوان للدوائر (للمخطط السنوي)
+        function createYearlyPointColors(prayerValues) {
+            return prayerValues.map(value => getColorByMonthlyTotal(value));
+        }
+        
+        // ✅ دالة للحصول على بيانات الصلوات الشهرية
         function getMonthlyPrayerData() {
             const daysInMonth = getDaysInMonth(currentViewMonth, currentViewYear);
             const labels = [];
@@ -1782,7 +1815,7 @@
             return { labels, values };
         }
         
-        // دالة للحصول على بيانات الصلوات السنوية
+        // ✅ دالة للحصول على بيانات الصلوات السنوية
         function getYearlyPrayerData() {
             const labels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
                           'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
@@ -1812,12 +1845,12 @@
             return { labels, values };
         }
         
-        // دالة إنشاء المخططات مع الحجم المناسب
+        // ✅ ✅ ✅ ✅ دالة إنشاء المخططات مع التعديلات الجديدة ✅ ✅ ✅ ✅
         function createCharts() {
             const monthlyData = getMonthlyPrayerData();
             const yearlyData = getYearlyPrayerData();
             
-            // تدمير المخططات القديمة إذا كانت موجودة
+            // تدمير المخططات القديمة
             if (window.monthlyChartInstance) {
                 window.monthlyChartInstance.destroy();
             }
@@ -1825,13 +1858,15 @@
                 window.yearlyChartInstance.destroy();
             }
             
-            // مخطط الشهر
+            // ✅ مخطط الشهر مع التعديلات الجديدة
             const monthlyCanvas = document.getElementById('monthlyChart');
             const monthlyCtx = monthlyCanvas.getContext('2d');
             
-            // تعيين حجم المخطط
             monthlyCanvas.width = monthlyCanvas.parentElement.offsetWidth;
             monthlyCanvas.height = 250;
+            
+            // ✅ إنشاء مصفوفة ألوان للدوائر (للمخطط الشهري)
+            const monthlyPointColors = createMonthlyPointColors(monthlyData.values);
             
             window.monthlyChartInstance = new Chart(monthlyCtx, {
                 type: 'line',
@@ -1840,11 +1875,16 @@
                     datasets: [{
                         label: 'عدد الصلوات',
                         data: monthlyData.values,
-                        borderColor: '#4CAF50',
-                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderColor: '#000000', // ✅ خط أسود ثابت
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)', // ✅ خلفية شفافة خفيفة
                         borderWidth: 2,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.3,
+                        pointBackgroundColor: monthlyPointColors, // ✅ ألوان الدوائر حسب عدد الصلوات
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -1854,19 +1894,32 @@
                         legend: {
                             display: false
                         },
-                        title: {
-                            display: false
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const day = context.dataIndex + 1;
+                                    return `اليوم ${day}: ${value} صلاة`;
+                                }
+                            }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            max: 5, // ✅ الحد الأقصى 5 صلوات في اليوم
                             title: {
                                 display: true,
                                 text: 'عدد الصلوات'
                             },
                             grid: {
                                 color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return value;
+                                }
                             }
                         },
                         x: {
@@ -1886,13 +1939,15 @@
                 }
             });
             
-            // مخطط السنة
+            // ✅ مخطط السنة مع التعديلات الجديدة
             const yearlyCanvas = document.getElementById('yearlyChart');
             const yearlyCtx = yearlyCanvas.getContext('2d');
             
-            // تعيين حجم المخطط
             yearlyCanvas.width = yearlyCanvas.parentElement.offsetWidth;
             yearlyCanvas.height = 250;
+            
+            // ✅ إنشاء مصفوفة ألوان للدوائر (للمخطط السنوي)
+            const yearlyPointColors = createYearlyPointColors(yearlyData.values);
             
             window.yearlyChartInstance = new Chart(yearlyCtx, {
                 type: 'line',
@@ -1901,11 +1956,16 @@
                     datasets: [{
                         label: 'عدد الصلوات',
                         data: yearlyData.values,
-                        borderColor: '#2196F3',
-                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        borderColor: '#000000', // ✅ خط أسود ثابت
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)', // ✅ خلفية شفافة خفيفة
                         borderWidth: 2,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.3,
+                        pointBackgroundColor: yearlyPointColors, // ✅ ألوان الدوائر حسب المجموع الشهري
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -1915,8 +1975,16 @@
                         legend: {
                             display: false
                         },
-                        title: {
-                            display: false
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const month = context.dataIndex + 1;
+                                    const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                                                      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+                                    return `${monthNames[month-1]}: ${value} صلاة`;
+                                }
+                            }
                         }
                     },
                     scales: {
@@ -1928,6 +1996,9 @@
                             },
                             grid: {
                                 color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                stepSize: 10
                             }
                         },
                         x: {
@@ -2058,10 +2129,9 @@
             }
         }
 
-        // ✅ إصلاح تصدير البيانات
+        // تصدير البيانات
         function exportData() {
             try {
-                // أولاً، حفظ البيانات الحالية
                 if (!saveData()) {
                     return;
                 }
@@ -2089,21 +2159,20 @@
             }
         }
 
-        // ✅ إصلاح استيراد البيانات
+        // استيراد البيانات
         function importData(file) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const loadedData = JSON.parse(e.target.result);
                     
-                    // التحقق من بنية البيانات
                     if (!loadedData.history || !loadedData.mosques || !loadedData.daily) {
                         throw new Error('ملف البيانات غير صالح');
                     }
                     
                     prayerData = loadedData;
                     loadDateData();
-                    saveData(); // حفظ بعد التحميل
+                    saveData();
                     alert('تم تحميل البيانات بنجاح');
                 } catch (error) {
                     console.error('❌ خطأ في تحميل البيانات:', error);
@@ -2114,7 +2183,7 @@
         }
         
         // ==============================
-        // ✅ إعداد مستمعي الأحداث المعدلة ✅
+        // إعداد مستمعي الأحداث
         // ==============================
         
         function setupEventListeners() {
@@ -2245,10 +2314,7 @@
                 }
             });
             
-            // إعادة رسم المخططات عند تغيير حجم النافذة
-            window.addEventListener('resize', function() {
-                updateCharts();
-            });
+            window.addEventListener('resize', updateCharts);
         }
         
         // تهيئة التطبيق
@@ -2257,10 +2323,6 @@
             setupEventListeners();
             updateUI();
             updateNavigationDisplay();
-            
-            // إضافة رسالة ترحيب في الكونسول
-            console.log('🚀 تطبيق متابعة الصلاة جاهز للاستخدام');
-            console.log('📊 البيانات المحفوظة:', Object.keys(prayerData.history).length, 'يوم');
         }
         
         // تشغيل التطبيق
